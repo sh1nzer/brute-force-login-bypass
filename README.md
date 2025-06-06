@@ -1,75 +1,123 @@
-# Brute-force-for-login-bypass-on-a-local-website
+
+# Brute Force Login Bypass - Local Website Demonstration
+
+**Author:** Shaurya Singh  
+**Project Type:** Personal Security Research Project  
+**Repository:** https://github.com/sh1nzer/brute-force-login-bypass.git
+
+## Project Overview
+
+This project demonstrates a brute force attack vulnerability on a simulated educational website. The demonstration is designed for cybersecurity learning purposes, showcasing common security weaknesses and their exploitation methods.
 
 ## Description - Sample Website Backstory
-- A-Z Education website offers courses related to React Development, Amazon Web Services and Cyber Security algorithms.
-- The website has a login page through which users create an account to purchase and view videos related to the course. 
-- A-Z Education does not utilize multi factor authentication methods like One Time Passwords, Security Questions, or email verification which leaves it vulnerable to a variety of attacks.
 
-## Bruteforce Attack
-In this case, I, the attacker, try to access the administrator panel of the website using a list of common usernames and passwords. To carry out the attack, Burp Intruder is used to find firstly the admin username and after finding the username finding the respective admin password to view the dashboard for the website.
+- **A-Z Education** is a mock educational platform offering courses in React Development, Amazon Web Services, and Cyber Security algorithms.
+- The website features a login system where users create accounts to purchase and access video content.
+- **Critical Security Flaw:** The platform lacks multi-factor authentication (MFA), including:
+  - No One Time Passwords (OTP)
+  - No security questions
+  - No email verification
+  - No rate limiting on login attempts
 
-### Prerequisites
-1. Python
-2. Burp Suite
-   
-### Steps to Carry Out the Attack
+This absence of security measures makes the system vulnerable to various attack vectors, particularly brute force attacks.
 
-1. Clone this repositroy and start the flaks app.
-```
-git clone https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website.git
-cd Brute-force-for-login-bypass-on-a-local-website
+## Attack Methodology: Brute Force Login Bypass
+
+This demonstration involves attempting to gain unauthorized access to the administrator panel using automated credential testing. The attack employs Burp Suite's Intruder tool to systematically test common usernames and passwords.
+
+### Attack Phases:
+1. **Username Enumeration:** Identify valid admin username
+2. **Password Discovery:** Brute force the corresponding password
+3. **Access Achievement:** Successfully log into the admin dashboard
+
+## Prerequisites
+
+- Python 3.x
+- Burp Suite (Community or Professional Edition)
+- Flask framework
+
+## Setup and Execution Steps
+
+### 1. Environment Setup
+```bash
+git clone https://github.com/sh1nzer/brute-force-login-bypass.git
+cd brute-force-login-bypass
 pip install flask
 python app.py
 ```
-2. Launch Burp Suite and access the login panel in Burp Browser.
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/509c47e6-260a-4407-81cc-5281d7ab06cb)
 
-3. Make sure the intercept is on in Burp Suite and use any credentials to post a request.
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/24905b8e-e123-49e3-948e-7d6b3fe23448)
+### 2. Burp Suite Configuration
+- Launch Burp Suite
+- Configure browser proxy settings
+- Access the local website through Burp's browser
+- Enable request intercept
 
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/bcbb7685-51b2-4068-8807-bd019b6b077a)
+### 3. Initial Request Capture
+- Navigate to the login panel
+- Submit any test credentials
+- Capture the POST request in Burp Suite Proxy
 
-4. Send this request to Burp Repeater, Choose the attack type to Sniper and add a payload position to username.
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/0fff17cc-f64a-4deb-94b4-4f22dc10c6d9)
+### 4. Username Enumeration Attack
+- Send captured request to Burp Intruder
+- Configure attack type: **Sniper**
+- Set payload position on the username parameter
+- Load the provided `usernames.txt` wordlist
+- Execute the attack and analyze response codes
 
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/203d0d32-8a0b-446d-837c-dad06789d1fa)
+### 5. Password Brute Force Attack
+- Once valid username is identified (different HTTP response code)
+- Reconfigure Intruder to target the password parameter
+- Load the password wordlist
+- Execute the attack to identify valid credentials
 
-5. Using the common `usernames.txt` of this repostiory, add this to the payload as a simple list and start the attack.
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/fd1593f7-d692-429c-89cc-e6cab39af142)
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/9e69c6c2-12ed-472a-9170-82ebe8825a25)
+### 6. Successful Authentication
+- Use discovered credentials to access admin panel
+- Document successful unauthorized access
 
-6. Sample bruteforce attack on username.
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/5f6bef40-b1d6-4c37-b746-da5a8583f56c)
+## Key Attack Indicators
 
-7. Observe that one status code is different than the others.
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/bce81bb1-efb7-42a0-85fe-d3051ec60c42)
+- **Response Code Analysis:** Valid credentials typically return different HTTP status codes
+- **Response Length Variations:** Successful logins often have different response sizes
+- **Response Time Differences:** Authentication success may cause timing variations
 
-8. After finding out that “admin” is the admin username, we change the payload to the password parameter and apply brute force using password list to find the password.
+## Security Mitigation Strategies
 
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/c1855621-f49d-43d2-b802-7bb51daa4df1)
+### Primary Defenses:
+1. **Strong Password Policies**
+   - Minimum 12 characters
+   - Complex character requirements
+   - Regular password rotation
 
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/53b07e39-c587-467d-ad62-5318b80a2044)
+2. **Account Lockout Mechanisms**
+   - Limit failed login attempts (3-5 attempts)
+   - Progressive delay increases
+   - Temporary account suspension
 
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/2d2817c0-3668-42dc-a725-619d1a3c3ab3)
+3. **Multi-Factor Authentication (MFA)**
+   - SMS-based OTP
+   - Authenticator app integration
+   - Hardware security keys
 
-9. Now we come to know the password and username for the admin (because of the status codes) and thus we login in to the admin panel using these credentials.
+### Additional Security Measures:
+4. **IP Address Monitoring and Blocking**
+5. **CAPTCHA Implementation**
+6. **Unique Administrative URLs**
+7. **Web Application Firewall (WAF) Deployment**
+8. **Real-time Security Monitoring**
+9. **SSH Root Login Restrictions**
+10. **Regular Security Audits**
 
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/5899e8a7-1aa5-4917-b3b9-5f50999450b5)
+## Educational Purpose Disclaimer
 
-10. Accessed the admin panel.
+This project is developed solely for educational and authorized security testing purposes. The techniques demonstrated should only be used on systems you own or have explicit permission to test. Unauthorized access to computer systems is illegal and unethical.
 
-![image](https://github.com/akshatmiglani/Brute-force-for-login-bypass-on-a-local-website/assets/120178102/243342a6-248d-4bd2-b8c0-8d3c6feda657)
+## Contributing
 
-## Prevention Techniques
-1. Use Strong Passwords.
-2. Limit Login Attempts.
-3. Monitor IP addresses.  
-4. Use Two-Factor Authentication (2FA).   
-5. Use CAPTCHAs.  
-6. Use Unique Login URLs
-7. Disable Root SSH Logins
-8. Use Web Application Firewalls (WAFs)
+This is a personal research project by Shaurya Singh. If you'd like to suggest improvements or report issues, please feel free to open an issue or submit a pull request.
 
+
+**⚠️ Security Notice:** Always ensure you have proper authorization before conducting any security testing. This demonstration is intended for controlled, educational environments only.
+```
 
 
 
